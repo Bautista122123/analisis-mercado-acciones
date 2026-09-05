@@ -1,6 +1,6 @@
-# analisis-datos-01
+# analisis-mercado-acciones  
 
-Proyecto base para análisis de datos.
+Proyecto base de análisis de datos.
 
 ## Estructura
 
