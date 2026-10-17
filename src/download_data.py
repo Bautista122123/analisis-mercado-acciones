@@ -1,3 +1,6 @@
+# IMPORTAMOS LIBRERIAS   
+
+import pandas as pd 
 import yfinance as yf
 from pathlib import Path
 
@@ -22,21 +25,30 @@ def descargar_activo(nombre: str, ticker: str) -> None:
     Descarga un activo desde Yahoo Finance y lo guarda como CSV.
     """
 
-    print(f"Descargando {nombre}...")
+    print(f"Descargando {nombre} ({ticker})...")
 
-    df = yf.download(
-        ticker,
-        start="2020-01-01",
-        progress=False
-    )
+    try:
+        
+        df = yf.download(
+            ticker,
+            start="2020-01-01",
+            progress=False
+        )
 
-    archivo = DATA_DIR / f"{nombre}.csv"
-    df.to_csv(archivo)
+        if isinstance(df.columns, pd.MultiIndex):
+            df.columns = df.columns.get_level_values(0)
 
-    print(f"✅ {nombre} guardado en {archivo}")
+        df.index.name = 'Date'
 
+        archivo = DATA_DIR / f"{nombre}.csv"
+        df.to_csv(archivo)
+    
+        print(f"✅ {nombre} guardado en {archivo}")
+    except Exception as es:
+                # Captura el error en 'e' y lo muestra en consola sin detener el programa
+        print(f"❌ Error al descargar {nombre}: {e}")
 
-def main():
+def ejecutar_descarga() -> None:
     """
     Función principal del programa.
     """
@@ -45,7 +57,3 @@ def main():
         descargar_activo(nombre, ticker)
 
     print("\n Descarga finalizada.")
-
-
-if __name__ == "__main__":
-    main()
