@@ -1,41 +1,46 @@
-# ================================================================
 # IMPORTACIONES
-# ================================================================
-
 from pathlib import Path
-
-#Funciones de modulos 'scr'
+# Funciones de modulos 'src'
 from download_data import ejecutar_descarga
 from explore_data import explorar_activo
 from analisis_activo import analizar_activo
 
-#Ruta de la carpeta que queremos escanear
+# Ruta de las carpetas de datos
 DIR_RAW = Path("data/raw")
+DIR_PROCESSED = Path("data/processed")
 
 def main():
-    # Verificamos si la carpeta NO existe, o si existe pero está vacía (no hay .csv)
-    if not DIR_RAW.exists() or not list(DIR_RAW.glob("*.csv")):
-        print(f"⚠️ No se detectaron archivos .csv en '{DIR_RAW}'. Iniciando descarga automática...")
-        ejecutar_descarga()
+    print("==================================================")
+    print("   SISTEMA CENTRALIZADO DE ANÁLISIS FINANCIERO   ")
+    print("==================================================")
+    
+    # ETAPA 0: Descarga automatizada y limpieza inicial desde el origen
+    ejecutar_descarga()
+    print("\n==================================================")
+    print("   INICIANDO PIPELINE DE EXPLORACIÓN Y ANÁLISIS  ")
+    print("==================================================")
 
-    #Buscamos todos los archivos .csv y extraemos su nombres limpios
-    lista_activos= [archivo.stem for archivo in DIR_RAW.glob("*.csv")]
+    # Buscamos todos los archivos .csv y extraemos sus nombres limpios
+    lista_activos = [archivo.stem for archivo in DIR_RAW.glob("*.csv")]
 
-    #Control por si la carpeta esta vacia
+    # Control por si la carpeta esta vacia
     if not lista_activos:
         print(f"⚠️ Alerta: No se encontraron archivos .csv en la carpeta {DIR_RAW}")
         return
 
-    print(f" Se detectaron{len(lista_activos)} para analizar:{lista_activos}\n")
+    print(f"Se detectaron {len(lista_activos)} activos para analizar: {lista_activos}\n")
 
     for activo in lista_activos:
-        print(f"--- Iniciando procesamiento para:{activo.upper()} --- ")
+        print(f"--- Iniciando procesamiento para: {activo.upper()} --- ")
+        
         # Etapa 1: Exploración inicial (EDA)
         explorar_activo(activo)
-
-        # Etapa 2
+        
+        # Etapa 2: Análisis y transformación de datos
         analizar_activo(activo)
-        print(f"Procesamiento completo para {activo}\n")
+        
+        print(f"✅ Procesamiento completo para {activo}\n")
+        print("-" * 50)
 
-if __name__== "__main__":
+if __name__ == "__main__":
     main()

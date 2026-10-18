@@ -11,23 +11,24 @@ DIR_PROCESSED.mkdir(parents=True, exist_ok=True)
 
 #FUNCIÓN DE ANÁLISIS DATA WRANGLING
 def analizar_activo(nombre_activo: str) -> None:
-    """
-    Carga el archivo CSV de un activo, calcula sus rendimientos diarios, muestra un reporte en consola
-    """
-    ruta_entrada= DIR_RAW / f"{nombre_activo}.csv"
-    ruta_salida= DIR_PROCESSED / f"{nombre_activo}_procesado.csv"
-
+    ruta_entrada = DIR_RAW / f"{nombre_activo}.csv"
+    ruta_salida = DIR_PROCESSED / f"{nombre_activo}_procesado.csv"
+    
     if not ruta_entrada.exists():
         print(f"❌ Error: No se encontró el archivo para '{nombre_activo}' en {ruta_entrada}")
         return
-
+        
     print(f"\n🔄 Procesando análisis para: {nombre_activo}...")
-
-    #Carga y preparación
-    df= pd.read_csv(ruta_entrada) #.read_csv
-    df['date']=pd.to_datetime(df['date'])
-    df= df.sort_values(by='date').reset_index(drop=True)
     
-    #Guardado de datos 
+    # 1. Leer el CSV limpio que genera el nuevo download_data
+    df = pd.read_csv(ruta_entrada)
+    
+    # 2. Convertir directamente a datetime (ya no hay texto basura que lo rompa)
+    df['Date'] = pd.to_datetime(df['Date'])
+    
+    # 3. Ordenar cronológicamente y limpiar el índice numérico
+    df = df.sort_values(by='Date').reset_index(drop=True)
+    
+    # 4. Guardar en la carpeta de procesados
     df.to_csv(ruta_salida, index=False)
-    print(f"💾 Archivo ordenado guardado con éxito en: {ruta_salida}")
+    print(f"✅ {nombre_activo} analizado y guardado en {ruta_salida}")
