@@ -1,22 +1,21 @@
-#================================================================
-#IMPORTACIONES
-#================================================================
+# IMPORTACIONES
 import pandas as pd
-from pathlib import Path
 
-# Ruta del archivo que queremos analizar
-DIR_RAW = Path("data/raw")
+from config import DIR_RAW
 
-def explorar_activo(nombre_activo: str) -> None: 
-    ruta=DIR_RAW / f"{nombre_activo}.csv"
+
+def explorar_activo(nombre_activo: str) -> None:
+    """EDA inicial: dimensiones, rango de fechas y valores nulos."""
+    ruta = DIR_RAW / f"{nombre_activo}.csv"
     if not ruta.exists():
-        print(f"❌ No se puede explorar: No existe {ruta}")
+        print(f"[ERROR] No se puede explorar: no existe {ruta}")
         return
-    # Muestra activo en consola
-    print(f"\n--- EDA INICIAL: {nombre_activo.upper()} ---") 
-    # Leer el archivo
+
     df = pd.read_csv(ruta)
 
+    print(f"\n--- EDA INICIAL: {nombre_activo.upper()} ---")
     print("Dimensiones:", df.shape)
     print("Columnas:", df.columns.tolist())
+    print(f"Rango de fechas: {df['Date'].min()} -> {df['Date'].max()}")
+    print("Valores nulos:", int(df.isna().sum().sum()))
     print(df.head(2))

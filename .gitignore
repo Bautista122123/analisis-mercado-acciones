@@ -19,3 +19,11 @@ Thumbs.db
 
 # Build artifacts
 *.log
+
+# Datos locales generados por el pipeline
+data/raw/*.csv
+data/processed/*.csv
+
+# Configuracion de VS Code y paquetes temporales
+.vscode/
+
